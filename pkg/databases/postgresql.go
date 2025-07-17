@@ -1,8 +1,8 @@
 package databases
 
 import (
-	"go-fiber-clean-arch-example/configs"
-	"go-fiber-clean-arch-example/pkg/utils"
+	"integration-auth-service/configs"
+	"integration-auth-service/pkg/utils"
 	"log"
 
 	_ "github.com/jackc/pgx/v4/stdlib"

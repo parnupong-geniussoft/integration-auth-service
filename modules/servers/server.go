@@ -1,11 +1,12 @@
 package servers
 
 import (
-	"go-fiber-clean-arch-example/configs"
-	"go-fiber-clean-arch-example/pkg/utils"
+	"integration-auth-service/configs"
+	"integration-auth-service/pkg/utils"
 	"log"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/patrickmn/go-cache"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,13 +15,15 @@ type Server struct {
 	App *fiber.App
 	Cfg *configs.Configs
 	Db  *sqlx.DB
+	C   *cache.Cache
 }
 
-func NewServer(cfg *configs.Configs, db *sqlx.DB) *Server {
+func NewServer(cfg *configs.Configs, db *sqlx.DB, c *cache.Cache) *Server {
 	return &Server{
 		App: fiber.New(),
 		Cfg: cfg,
 		Db:  db,
+		C:   c,
 	}
 }
 

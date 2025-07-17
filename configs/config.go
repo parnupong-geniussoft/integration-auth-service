@@ -1,8 +1,11 @@
 package configs
 
+import "os"
+
 type Configs struct {
-	PostgreSQL PostgreSQL
 	App        Fiber
+	PostgreSQL PostgreSQL
+	Auth       Auth
 }
 
 type Fiber struct {
@@ -19,4 +22,34 @@ type PostgreSQL struct {
 	Password string
 	Database string
 	SSLMode  string
+}
+
+// Auth
+type Auth struct {
+	BasicAuthUsername string
+	BasicAuthPassword string
+	OauthJwtSecret    string
+}
+
+func LoadEnv() Configs {
+	cfg := Configs{}
+
+	// Fiber configs
+	cfg.App.Host = os.Getenv("FIBER_HOST")
+	cfg.App.Port = os.Getenv("FIBER_PORT")
+
+	// Database Configs
+	cfg.PostgreSQL.Host = os.Getenv("DB_HOST")
+	cfg.PostgreSQL.Port = os.Getenv("DB_PORT")
+	cfg.PostgreSQL.Protocol = os.Getenv("DB_PROTOCOL")
+	cfg.PostgreSQL.Username = os.Getenv("DB_USERNAME")
+	cfg.PostgreSQL.Password = os.Getenv("DB_PASSWORD")
+	cfg.PostgreSQL.Database = os.Getenv("DB_DATABASE")
+
+	// Auth Configs
+	cfg.Auth.BasicAuthUsername = os.Getenv("BASIC_AUTH_USERNAME")
+	cfg.Auth.BasicAuthPassword = os.Getenv("BASIC_AUTH_PASSWORD")
+	cfg.Auth.OauthJwtSecret = os.Getenv("OAUTH_JWT_SECRET")
+
+	return cfg
 }

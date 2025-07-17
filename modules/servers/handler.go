@@ -1,22 +1,42 @@
 package servers
 
 import (
-	_userControllers "go-fiber-clean-arch-example/modules/users/controllers"
-	_userRepositories "go-fiber-clean-arch-example/modules/users/repositories"
-	_userUsecases "go-fiber-clean-arch-example/modules/users/usecases"
+	_authControllers "integration-auth-service/modules/auth/controllers"
+	_authRepositories "integration-auth-service/modules/auth/repositories"
+	_authUsecases "integration-auth-service/modules/auth/usecases"
+	"integration-auth-service/modules/middlewares"
 
 	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 func (s *Server) MapHandlers() error {
+
+	s.App.Use(middlewares.RecoverMiddleware())
+
+	// Swagger UI
+	s.App.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	s.App.Get("/health-check", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "ok"})
+	})
+
+	// s.App.Use(middlewares.NewBasicAuth(s.Cfg))
+
 	// Group a version
 	v1 := s.App.Group("/v1")
 
-	//* Users group
-	usersGroup := v1.Group("/users")
-	usersRepository := _userRepositories.NewUsersRepository(s.Db)
-	usersUsecase := _userUsecases.NewUsersUsecase(usersRepository)
-	_userControllers.NewUsersController(usersGroup, usersUsecase)
+	// Public routes (ไม่ต้องใช้ JWT)
+	publicGroup := v1.Group("/integration-api")
+
+	// Protected routes (ต้องใช้ JWT)
+	privateGroup := v1.Group("/integration-api")
+	privateGroup.Use(middlewares.NewJWTMiddleware(s.Cfg.Auth.OauthJwtSecret))
+
+	// Auth Controller
+	authRepository := _authRepositories.NewAuthRepository(s.Db, s.C)
+	authUsecase := _authUsecases.NewAuthUsecase(s.Cfg, authRepository)
+	_authControllers.NewAuthController(publicGroup, authUsecase)
 
 	// End point not found response
 	s.App.Use(func(c *fiber.Ctx) error {

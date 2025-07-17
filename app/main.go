@@ -1,13 +1,14 @@
 package main
 
 import (
-	"go-fiber-clean-arch-example/configs"
-	"go-fiber-clean-arch-example/modules/servers"
-	databases "go-fiber-clean-arch-example/pkg/databases"
+	"integration-auth-service/configs"
+	"integration-auth-service/modules/servers"
+	databases "integration-auth-service/pkg/databases"
 	"log"
-	"os"
+	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/patrickmn/go-cache"
 )
 
 func main() {
@@ -15,27 +16,18 @@ func main() {
 	if err := godotenv.Load("../.env"); err != nil {
 		panic(err.Error())
 	}
-	cfg := new(configs.Configs)
 
-	// Fiber configs
-	cfg.App.Host = os.Getenv("FIBER_HOST")
-	cfg.App.Port = os.Getenv("FIBER_PORT")
-
-	// Database Configs
-	cfg.PostgreSQL.Host = os.Getenv("DB_HOST")
-	cfg.PostgreSQL.Port = os.Getenv("DB_PORT")
-	cfg.PostgreSQL.Protocol = os.Getenv("DB_PROTOCOL")
-	cfg.PostgreSQL.Username = os.Getenv("DB_USERNAME")
-	cfg.PostgreSQL.Password = os.Getenv("DB_PASSWORD")
-	cfg.PostgreSQL.Database = os.Getenv("DB_DATABASE")
+	cfg := configs.LoadEnv()
 
 	// New Database
-	db, err := databases.NewPostgreSQLDBConnection(cfg)
+	db, err := databases.NewPostgreSQLDBConnection(&cfg)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	defer db.Close()
 
-	s := servers.NewServer(cfg, db)
+	c := cache.New(5*time.Minute, 10*time.Minute)
+
+	s := servers.NewServer(&cfg, db, c)
 	s.Start()
 }

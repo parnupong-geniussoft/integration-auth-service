@@ -1,1 +1,1 @@
-# go-fiber-clean-arch-example
+# integration-auth-service

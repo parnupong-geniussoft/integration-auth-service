@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"go-fiber-clean-arch-example/configs"
+	"integration-auth-service/configs"
 )
 
 func ConnectionUrlBuilder(stuff string, cfg *configs.Configs) (string, error) {
