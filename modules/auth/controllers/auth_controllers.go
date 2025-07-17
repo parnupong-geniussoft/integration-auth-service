@@ -18,6 +18,17 @@ func NewAuthController(r fiber.Router, authUsecase usecases.AuthUsecase) {
 	r.Post("/request_token", controllers.RequestToken)
 }
 
+// RequestToken godoc
+// @Summary Request OAuth Token
+// @Description รับ client_id และ client_secret เพื่อขอ JWT token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body entities.TokenRequest true "Token request body"
+// @Success 200 {object} entities.TokenResponse
+// @Failure 400 {object} fiber.Error "Bad Request"
+// @Failure 401 {object} fiber.Error "Unauthorized"
+// @Router /v1/integration-api/request_token [post]
 func (h *authController) RequestToken(c *fiber.Ctx) error {
 	req := new(entities.TokenRequest)
 
@@ -29,7 +40,7 @@ func (h *authController) RequestToken(c *fiber.Ctx) error {
 
 	if err != nil {
 		c.Context().SetStatusCode(fiber.StatusUnauthorized)
-		return fiber.NewError(401, err.Error())
+		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
 
 	return c.JSON(resp)

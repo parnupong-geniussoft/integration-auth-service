@@ -21,17 +21,11 @@ func (s *Server) MapHandlers() error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
-	// s.App.Use(middlewares.NewBasicAuth(s.Cfg))
-
 	// Group a version
 	v1 := s.App.Group("/v1")
 
-	// Public routes (ไม่ต้องใช้ JWT)
+	// Public routes
 	publicGroup := v1.Group("/integration-api")
-
-	// Protected routes (ต้องใช้ JWT)
-	privateGroup := v1.Group("/integration-api")
-	privateGroup.Use(middlewares.NewJWTMiddleware(s.Cfg.Auth.OauthJwtSecret))
 
 	// Auth Controller
 	authRepository := _authRepositories.NewAuthRepository(s.Db, s.C)

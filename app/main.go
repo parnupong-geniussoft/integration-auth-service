@@ -1,3 +1,8 @@
+// @title Integration Auth API
+// @version 1.0
+// @description API สำหรับ OAuth Token
+// @host localhost:5000
+// @BasePath /v1
 package main
 
 import (
