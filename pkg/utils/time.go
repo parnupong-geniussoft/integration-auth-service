@@ -14,3 +14,9 @@ func GetTimeMinsToNewDay() time.Duration {
 
 	return remainingDuration
 }
+
+func DurationMS(start time.Time) int64 {
+	timeEnd := time.Now()
+	duration := timeEnd.Sub(start)
+	return duration.Milliseconds()
+}

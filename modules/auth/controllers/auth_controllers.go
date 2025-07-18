@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"integration-auth-service/modules/auth/entities"
 	"integration-auth-service/modules/auth/usecases"
-	"integration-auth-service/modules/entities"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,8 +26,6 @@ func NewAuthController(r fiber.Router, authUsecase usecases.AuthUsecase) {
 // @Produce json
 // @Param request body entities.TokenRequest true "Token request body"
 // @Success 200 {object} entities.TokenResponse
-// @Failure 400 {object} fiber.Error "Bad Request"
-// @Failure 401 {object} fiber.Error "Unauthorized"
 // @Router /v1/integration-api/request_token [post]
 func (h *authController) RequestToken(c *fiber.Ctx) error {
 	req := new(entities.TokenRequest)

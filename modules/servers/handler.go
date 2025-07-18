@@ -6,16 +6,19 @@ import (
 	_authUsecases "integration-auth-service/modules/auth/usecases"
 	"integration-auth-service/modules/middlewares"
 
+	_ "integration-auth-service/docs"
+
 	"github.com/gofiber/fiber/v2"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 func (s *Server) MapHandlers() error {
-
-	s.App.Use(middlewares.RecoverMiddleware())
-
 	// Swagger UI
 	s.App.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	s.App.Use(middlewares.SystemLoggerMiddleware(*s.Log))
+	s.App.Use(middlewares.DbLoggerMiddleware(*s.Log))
+	s.App.Use(middlewares.RecoverMiddleware())
 
 	s.App.Get("/health-check", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})

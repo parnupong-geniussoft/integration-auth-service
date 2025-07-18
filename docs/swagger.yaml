@@ -1,0 +1,54 @@
+basePath: /v1
+definitions:
+  entities.TokenRequest:
+    properties:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+      grant_type:
+        type: string
+    required:
+    - client_id
+    - client_secret
+    - grant_type
+    type: object
+  entities.TokenResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      token_type:
+        type: string
+    type: object
+host: localhost:5000
+info:
+  contact: {}
+  description: API สำหรับ OAuth Token
+  title: Integration Auth API
+  version: "1.0"
+paths:
+  /v1/integration-api/request_token:
+    post:
+      consumes:
+      - application/json
+      description: รับ client_id และ client_secret เพื่อขอ JWT token
+      parameters:
+      - description: Token request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.TokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.TokenResponse'
+      summary: Request OAuth Token
+      tags:
+      - Auth
+swagger: "2.0"

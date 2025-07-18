@@ -9,30 +9,54 @@ import (
 	"integration-auth-service/configs"
 	"integration-auth-service/modules/servers"
 	databases "integration-auth-service/pkg/databases"
+	"integration-auth-service/pkg/loggers"
 	"log"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	"github.com/patrickmn/go-cache"
 )
 
 func main() {
+	config := loadConfig()
+	db := initDatabase(config)
+	defer db.Close()
+	cache := initCache()
+	logger := initLogger(db)
+	server := servers.NewServer(&config, db, cache, logger)
+	server.Start()
+}
+
+func loadConfig() configs.Configs {
 	// Load dotenv config
 	if err := godotenv.Load("../.env"); err != nil {
 		panic(err.Error())
 	}
 
-	cfg := configs.LoadEnv()
+	config := configs.LoadEnv()
 
+	return config
+}
+
+func initDatabase(config configs.Configs) *sqlx.DB {
 	// New Database
-	db, err := databases.NewPostgreSQLDBConnection(&cfg)
+	db, err := databases.NewPostgreSQLDBConnection(&config)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	defer db.Close()
 
+	return db
+}
+
+func initCache() *cache.Cache {
+	// Initialize cache with a default expiration time and cleanup interval
 	c := cache.New(5*time.Minute, 10*time.Minute)
+	return c
+}
 
-	s := servers.NewServer(&cfg, db, c)
-	s.Start()
+func initLogger(db *sqlx.DB) *loggers.Logger {
+	// Initialize logger
+	logger := loggers.NewLogger(db)
+	return &logger
 }

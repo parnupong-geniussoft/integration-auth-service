@@ -1,7 +1,10 @@
 package servers
 
 import (
+	"bytes"
+	"encoding/json"
 	"integration-auth-service/configs"
+	"integration-auth-service/pkg/loggers"
 	"integration-auth-service/pkg/utils"
 	"log"
 
@@ -16,14 +19,25 @@ type Server struct {
 	Cfg *configs.Configs
 	Db  *sqlx.DB
 	C   *cache.Cache
+	Log *loggers.Logger
 }
 
-func NewServer(cfg *configs.Configs, db *sqlx.DB, c *cache.Cache) *Server {
+func NewServer(cfg *configs.Configs, db *sqlx.DB, c *cache.Cache, log *loggers.Logger) *Server {
+	fiberConfig := fiber.Config{
+		BodyLimit: 100 * 1024 * 1024,
+		JSONDecoder: func(data []byte, v interface{}) error {
+			decoder := json.NewDecoder(bytes.NewReader(data))
+			decoder.DisallowUnknownFields()
+			return decoder.Decode(v)
+		},
+	}
+
 	return &Server{
-		App: fiber.New(),
+		App: fiber.New(fiberConfig),
 		Cfg: cfg,
 		Db:  db,
 		C:   c,
+		Log: log,
 	}
 }
 

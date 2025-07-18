@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"errors"
+	"integration-auth-service/modules/auth/entities"
 	"integration-auth-service/modules/auth/repositories"
-	"integration-auth-service/modules/entities"
 	"integration-auth-service/pkg/utils"
 	"time"
 

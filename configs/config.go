@@ -26,9 +26,7 @@ type PostgreSQL struct {
 
 // Auth
 type Auth struct {
-	BasicAuthUsername string
-	BasicAuthPassword string
-	OauthJwtSecret    string
+	OauthJwtSecret string
 }
 
 func LoadEnv() Configs {
@@ -47,8 +45,6 @@ func LoadEnv() Configs {
 	cfg.PostgreSQL.Database = os.Getenv("DB_DATABASE")
 
 	// Auth Configs
-	cfg.Auth.BasicAuthUsername = os.Getenv("BASIC_AUTH_USERNAME")
-	cfg.Auth.BasicAuthPassword = os.Getenv("BASIC_AUTH_PASSWORD")
 	cfg.Auth.OauthJwtSecret = os.Getenv("OAUTH_JWT_SECRET")
 
 	return cfg

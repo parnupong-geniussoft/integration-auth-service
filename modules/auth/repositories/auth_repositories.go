@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"fmt"
-	"integration-auth-service/modules/entities"
+	"integration-auth-service/modules/auth/entities"
 	"integration-auth-service/pkg/utils"
 
 	"github.com/jmoiron/sqlx"
