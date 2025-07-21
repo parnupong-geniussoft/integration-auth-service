@@ -41,7 +41,7 @@ func loadConfig() configs.Configs {
 
 func initDatabase(config configs.Configs) *sqlx.DB {
 	// New Database
-	db, err := databases.NewPostgreSQLDBConnection(&config)
+	db, err := databases.NewPostgreSqlDbConnection(&config)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

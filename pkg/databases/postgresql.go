@@ -9,7 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func NewPostgreSQLDBConnection(cfg *configs.Configs) (*sqlx.DB, error) {
+func NewPostgreSqlDbConnection(cfg *configs.Configs) (*sqlx.DB, error) {
 	postgresUrl, err := utils.ConnectionUrlBuilder("postgresql", cfg)
 	if err != nil {
 		return nil, err
