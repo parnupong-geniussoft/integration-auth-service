@@ -140,10 +140,10 @@ func FindMasker(path string, masker []MaskData) MaskData {
 func SaveLoggerDb(data LoggerStruct, Db *sqlx.DB) error {
 	_, err := Db.NamedExec(`INSERT INTO logger (
 		created_at, level, type, method, path, ip, message, duration_ms, header,
-		request_date, request, x_correlation_id
+		request_date, request, x_correlation_id, reference_id
 	) VALUES (
 		:created_at, :level, :type, :method, :path, :ip, :message, :duration_ms, :header,
-		:request_date, :request, :x_correlation_id
+		:request_date, :request, :x_correlation_id, :reference_id
 	)`, data)
 	if err != nil {
 		fmt.Println("logger save", err)
