@@ -30,6 +30,7 @@ type LoggerStruct struct {
 	Request        string    `db:"request"`
 	RequestDate    time.Time `db:"request_date"`
 	XCorrelationId string    `db:"x_correlation_id"`
+	ReferenceId    string    `db:"reference_id"`
 }
 
 func (data *LoggerStruct) HandleResponse(ctx *fiber.Ctx) {
