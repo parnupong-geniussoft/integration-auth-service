@@ -20,8 +20,8 @@ func (s *Server) MapHandlers() error {
 	s.App.Use(middlewares.DbLoggerMiddleware(*s.Log))
 	s.App.Use(middlewares.RecoverMiddleware())
 
-	s.App.Get("/health-check", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"status": "ok"})
+	s.App.Get("/health-check", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{"status": "ok"})
 	})
 
 	// Group a version
@@ -36,8 +36,8 @@ func (s *Server) MapHandlers() error {
 	_authControllers.NewAuthController(publicGroup, authUsecase)
 
 	// End point not found response
-	s.App.Use(func(c *fiber.Ctx) error {
-		return c.Status(fiber.ErrInternalServerError.Code).JSON(fiber.Map{
+	s.App.Use(func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.ErrInternalServerError.Code).JSON(fiber.Map{
 			"status":      fiber.ErrInternalServerError.Message,
 			"status_code": fiber.ErrInternalServerError.Code,
 			"message":     "error, end point not found",

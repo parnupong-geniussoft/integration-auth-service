@@ -27,19 +27,19 @@ func NewAuthController(r fiber.Router, authUsecase usecases.AuthUsecase) {
 // @Param request body entities.TokenRequest true "Token request body"
 // @Success 200 {object} entities.TokenResponse
 // @Router /v1/integration-api/request_token [post]
-func (h *authController) RequestToken(c *fiber.Ctx) error {
+func (h *authController) RequestToken(ctx *fiber.Ctx) error {
 	req := new(entities.TokenRequest)
 
-	if err := c.BodyParser(req); err != nil {
+	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
 
 	resp, err := h.AuthUsecase.GetToken(req)
 
 	if err != nil {
-		c.Context().SetStatusCode(fiber.StatusUnauthorized)
+		ctx.Context().SetStatusCode(fiber.StatusUnauthorized)
 		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
 
-	return c.JSON(resp)
+	return ctx.JSON(resp)
 }

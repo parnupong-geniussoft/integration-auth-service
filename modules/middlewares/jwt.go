@@ -12,8 +12,8 @@ func NewJWTMiddleware(secret string) fiber.Handler {
 		SigningKey: jwtware.SigningKey{
 			Key: []byte(secret),
 		},
-		SuccessHandler: func(c *fiber.Ctx) error {
-			authorizationHeader := c.Get("Authorization")
+		SuccessHandler: func(ctx *fiber.Ctx) error {
+			authorizationHeader := ctx.Get("Authorization")
 
 			if authorizationHeader == "" {
 				return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized: Missing Authorization header")
@@ -25,9 +25,9 @@ func NewJWTMiddleware(secret string) fiber.Handler {
 			}
 
 			token := authParts[1]
-			c.Locals("jwtToken", token)
+			ctx.Locals("jwtToken", token)
 
-			return c.Next()
+			return ctx.Next()
 		},
 	})
 }

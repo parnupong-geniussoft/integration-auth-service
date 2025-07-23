@@ -12,8 +12,8 @@ import (
 )
 
 type Logger interface {
-	SystemLogger(c *fiber.Ctx, start time.Time, err error)
-	DbLogger(c *fiber.Ctx) error
+	SystemLogger(ctx *fiber.Ctx, start time.Time, err error)
+	DbLogger(ctx *fiber.Ctx) error
 }
 
 type logger struct {
@@ -26,13 +26,13 @@ func NewLogger(db *sqlx.DB) Logger {
 	}
 }
 
-func (l *logger) SystemLogger(c *fiber.Ctx, start time.Time, err error) {
+func (l *logger) SystemLogger(ctx *fiber.Ctx, start time.Time, err error) {
 	stop := time.Now()
 	latency := stop.Sub(start)
-	status := c.Response().StatusCode()
-	method := c.Method()
-	ip := c.IP()
-	path := c.Path()
+	status := ctx.Response().StatusCode()
+	method := ctx.Method()
+	ip := ctx.IP()
+	path := ctx.Path()
 
 	errMessage := "-"
 	if err != nil {
@@ -50,34 +50,34 @@ func (l *logger) SystemLogger(c *fiber.Ctx, start time.Time, err error) {
 	)
 }
 
-func (l *logger) DbLogger(c *fiber.Ctx) error {
+func (l *logger) DbLogger(ctx *fiber.Ctx) error {
 	timeNow := time.Now()
 
 	xcc := fmt.Sprintf("%d", timeNow.UnixNano())
-	c.Request().Header.Add("x_correlation_id", xcc)
+	ctx.Request().Header.Add("x_correlation_id", xcc)
 
 	data := LoggerStruct{
 		CreatedAt:      timeNow,
 		Level:          "info",
 		Type:           "request",
-		Method:         c.Method(),
-		Path:           c.Path(),
-		Ip:             c.IP(),
+		Method:         ctx.Method(),
+		Path:           ctx.Path(),
+		Ip:             ctx.IP(),
 		DurationMs:     0,
 		RequestDate:    timeNow,
 		XCorrelationId: xcc,
 	}
 
-	data.MaskBodyRequest(c)
-	data.HeaderConvert(c)
+	data.MaskBodyRequest(ctx)
+	data.HeaderConvert(ctx)
 	loggerDbErr := SaveLoggerDb(data, l.Db)
 	if loggerDbErr != nil {
 		return errors.New("Can't save logger to db: " + loggerDbErr.Error())
 	}
 
-	if err := c.Next(); err != nil {
-		data.HandleError(c, err)
-		data.HeaderConvertResponse(c)
+	if err := ctx.Next(); err != nil {
+		data.HandleError(ctx, err)
+		data.HeaderConvertResponse(ctx)
 		loggerDbErr := SaveLoggerDb(data, l.Db)
 		if loggerDbErr != nil {
 			return errors.New("Can't save logger to db: " + loggerDbErr.Error())
@@ -85,8 +85,8 @@ func (l *logger) DbLogger(c *fiber.Ctx) error {
 		return err
 	}
 
-	data.HeaderConvertResponse(c)
-	data.HandleResponse(c)
+	data.HeaderConvertResponse(ctx)
+	data.HandleResponse(ctx)
 	loggerDbErr = SaveLoggerDb(data, l.Db)
 	if loggerDbErr != nil {
 		return errors.New("Can't save logger to db: " + loggerDbErr.Error())

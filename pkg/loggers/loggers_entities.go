@@ -32,8 +32,8 @@ type LoggerStruct struct {
 	XCorrelationId string    `db:"x_correlation_id"`
 }
 
-func (data *LoggerStruct) HandleResponse(c *fiber.Ctx) {
-	mBody := HandlerBodyMask(c.Path(), MaskersResponse, c.Response().Body())
+func (data *LoggerStruct) HandleResponse(ctx *fiber.Ctx) {
+	mBody := HandlerBodyMask(ctx.Path(), MaskersResponse, ctx.Response().Body())
 	data.Request = string(mBody)
 	data.CreatedAt = time.Now()
 	durationMs := utils.DurationMS(data.RequestDate)
@@ -41,12 +41,12 @@ func (data *LoggerStruct) HandleResponse(c *fiber.Ctx) {
 	data.DurationMs = durationMs
 }
 
-func (data *LoggerStruct) MaskBodyRequest(c *fiber.Ctx) {
-	mBody := HandlerBodyMask(c.Path(), MaskersRequest, c.Body())
+func (data *LoggerStruct) MaskBodyRequest(ctx *fiber.Ctx) {
+	mBody := HandlerBodyMask(ctx.Path(), MaskersRequest, ctx.Body())
 	data.Request = string(mBody)
 }
 
-func (data *LoggerStruct) HandleError(c *fiber.Ctx, err error) {
+func (data *LoggerStruct) HandleError(ctx *fiber.Ctx, err error) {
 	data.CreatedAt = time.Now()
 	durationMs := utils.DurationMS(data.RequestDate)
 	data.Type = "error"
@@ -54,8 +54,8 @@ func (data *LoggerStruct) HandleError(c *fiber.Ctx, err error) {
 	data.Message = err.Error()
 }
 
-func (data *LoggerStruct) HeaderConvert(c *fiber.Ctx) {
-	headers := c.Request().Header
+func (data *LoggerStruct) HeaderConvert(ctx *fiber.Ctx) {
+	headers := ctx.Request().Header
 	headerMap := make(map[string]string)
 	headers.VisitAll(func(key, value []byte) {
 		if string(key) == "Authorization" {
@@ -69,8 +69,8 @@ func (data *LoggerStruct) HeaderConvert(c *fiber.Ctx) {
 	data.Header = headerConverted
 }
 
-func (data *LoggerStruct) HeaderConvertResponse(c *fiber.Ctx) {
-	headers := c.Response().Header
+func (data *LoggerStruct) HeaderConvertResponse(ctx *fiber.Ctx) {
+	headers := ctx.Response().Header
 	headerMap := make(map[string]string)
 	headers.VisitAll(func(key, value []byte) {
 		if string(key) == "Authorization" {

@@ -8,17 +8,17 @@ import (
 )
 
 func SystemLoggerMiddleware(logger loggers.Logger) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(ctx *fiber.Ctx) error {
 		start := time.Now()
-		err := c.Next()
-		logger.SystemLogger(c, start, err)
+		err := ctx.Next()
+		logger.SystemLogger(ctx, start, err)
 		return err
 	}
 }
 
 func DbLoggerMiddleware(logger loggers.Logger) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		err := logger.DbLogger(c)
+	return func(ctx *fiber.Ctx) error {
+		err := logger.DbLogger(ctx)
 		if err != nil {
 			return err
 		}
