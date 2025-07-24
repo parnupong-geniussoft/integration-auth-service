@@ -51,7 +51,13 @@ cd integration-auth-service
 go mod tidy
 ```
 
-### 3. Run the Project
+### 3. Generate API documentation (Swagger)
+
+```bash
+swag init --generalInfo app/main.go 
+```
+
+### 4. Run the Project
 
 ```bash
 go run ./app/main.go

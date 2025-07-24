@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  integration-auth-service:
+    build: .
+    container_name: integration-auth-service
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - integration_network
+
+networks:
+  integration_network:
+    external: true

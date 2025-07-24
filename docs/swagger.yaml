@@ -22,7 +22,7 @@ definitions:
       token_type:
         type: string
     type: object
-host: localhost:5000
+host: localhost:8080
 info:
   contact: {}
   description: API สำหรับ OAuth Token

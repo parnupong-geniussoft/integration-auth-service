@@ -1,7 +1,7 @@
 // @title Integration Auth API
 // @version 1.0
 // @description API สำหรับ OAuth Token
-// @host localhost:5000
+// @host localhost:8080
 // @BasePath /v1
 package main
 
@@ -19,18 +19,24 @@ import (
 )
 
 func main() {
+	println("Starting Integration Auth Service...")
 	config := loadConfig()
 	db := initDatabase(config)
 	defer db.Close()
 	cache := initCache()
 	logger := initLogger(db)
+
+	println("Starting server...")
 	server := servers.NewServer(&config, db, cache, logger)
 	server.Start()
 }
 
 func loadConfig() configs.Configs {
-	// Load dotenv config
+	// Load environment variables for Localhost development
 	if err := godotenv.Load("../.env"); err != nil {
+
+		// Load dotenv config
+		// if err := godotenv.Load(".env"); err != nil {
 		panic(err.Error())
 	}
 

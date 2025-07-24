@@ -43,6 +43,7 @@ func LoadEnv() Configs {
 	cfg.PostgreSQL.Username = os.Getenv("DB_USERNAME")
 	cfg.PostgreSQL.Password = os.Getenv("DB_PASSWORD")
 	cfg.PostgreSQL.Database = os.Getenv("DB_DATABASE")
+	cfg.PostgreSQL.SSLMode = os.Getenv("DB_SSL_MODE")
 
 	// Auth Configs
 	cfg.Auth.OauthJwtSecret = os.Getenv("OAUTH_JWT_SECRET")
