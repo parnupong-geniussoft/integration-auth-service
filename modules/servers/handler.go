@@ -16,13 +16,13 @@ func (s *Server) MapHandlers() error {
 	// Swagger UI
 	s.App.Get("/swagger/*", fiberSwagger.WrapHandler)
 
-	s.App.Use(middlewares.SystemLoggerMiddleware(*s.Log))
-	s.App.Use(middlewares.DbLoggerMiddleware(*s.Log))
-	s.App.Use(middlewares.RecoverMiddleware())
-
 	s.App.Get("/health-check", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{"status": "ok"})
 	})
+
+	s.App.Use(middlewares.SystemLoggerMiddleware(*s.Log))
+	s.App.Use(middlewares.DbLoggerMiddleware(*s.Log))
+	s.App.Use(middlewares.RecoverMiddleware())
 
 	// Group a version
 	v1 := s.App.Group("/v1")
