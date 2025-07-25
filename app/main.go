@@ -2,7 +2,6 @@
 // @version 1.0
 // @description API สำหรับ OAuth Token
 // @host localhost:8080
-// @BasePath /v1
 package main
 
 import (
@@ -33,10 +32,10 @@ func main() {
 
 func loadConfig() configs.Configs {
 	// Load environment variables for Localhost development
-	if err := godotenv.Load("../.env"); err != nil {
+	// if err := godotenv.Load("../.env"); err != nil {
 
-		// Load dotenv config
-		// if err := godotenv.Load(".env"); err != nil {
+	// Load dotenv config
+	if err := godotenv.Load(".env"); err != nil {
 		panic(err.Error())
 	}
 

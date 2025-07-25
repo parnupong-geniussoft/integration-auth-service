@@ -1,4 +1,3 @@
-basePath: /v1
 definitions:
   entities.TokenRequest:
     properties:
